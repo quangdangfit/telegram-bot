@@ -30,7 +30,7 @@ func NewAction(service services.ActionService) *Action {
 // @Security ApiKeyAuth
 // @Success 200 {object} thttp.BaseResponse
 // @Router /private/actions [get]
-func (i *Action) List(c *gin.Context) thttp.Response {
+func (a *Action) List(c *gin.Context) thttp.Response {
 	var query schema.ActionQueryParam
 	if err := c.ShouldBindQuery(&query); err != nil {
 		logger.Error("Failed to bind query: ", err)
@@ -47,7 +47,7 @@ func (i *Action) List(c *gin.Context) thttp.Response {
 		}
 	}
 
-	result, pageInfo, err := i.service.List(c, query.Name)
+	result, pageInfo, err := a.service.List(c, query.Name)
 	var data []schema.Action
 	copier.Copy(&data, &result)
 	rs := schema.ResponsePagingResult{
@@ -71,7 +71,7 @@ func (i *Action) List(c *gin.Context) thttp.Response {
 // @Security BasicAuth
 // @Success 200 {object} thttp.BaseResponse
 // @Router /private/actions [post]
-func (i *Action) Create(c *gin.Context) thttp.Response {
+func (a *Action) Create(c *gin.Context) thttp.Response {
 	var body schema.ActionCreateParam
 	if err := c.Bind(&body); err != nil {
 		logger.Error("Failed to bind body: ", err)
@@ -88,7 +88,7 @@ func (i *Action) Create(c *gin.Context) thttp.Response {
 		}
 	}
 
-	result, err := i.service.Create(c, &body)
+	result, err := a.service.Create(c, &body)
 	return thttp.Response{
 		Error: err,
 		Data:  result,

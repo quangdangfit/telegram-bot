@@ -14,6 +14,7 @@ import (
 func RegisterAPI(r *gin.Engine, container *dig.Container) error {
 	err := container.Invoke(func(
 		action *api.Action,
+		message *api.Message,
 	) error {
 		route := r.Group("/")
 		basicAuthMiddleware := basic.BasicMiddleware(basic.WithValidator(basic.GetDefaultValidator()))
@@ -24,7 +25,7 @@ func RegisterAPI(r *gin.Engine, container *dig.Container) error {
 		internal := route.Group("/internal")
 		internal.Use(basicAuthMiddleware)
 
-		//internal.POST("messages", ginwrapper.Wrap(outMsg.Publish))
+		internal.POST("messages", ginwrapper.Wrap(message.Create))
 
 		// Private API
 		private := route.Group("/private")

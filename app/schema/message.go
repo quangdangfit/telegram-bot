@@ -11,7 +11,7 @@ type Message struct {
 }
 
 type MessageCreateParam struct {
-	Code   string `json:"code,omitempty"`
-	Action string `json:"action,omitempty" validate:"required"`
-	Data   int64  `json:"chat_id,omitempty"`
+	Code   string      `json:"code,omitempty"`
+	Action string      `json:"action,omitempty" validate:"required"`
+	Data   interface{} `json:"chat_id,omitempty"`
 }
