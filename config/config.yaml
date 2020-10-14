@@ -10,18 +10,12 @@ graceful:
 
 #DB config
 ts_mongodb:
-  host: 10.42.4.193:27017
-  user: truckair_access
-  pass: truckair@123
+  host: localhost:27017
+  user:
+  pass:
   authdb: admin
   replica: ""
-  db: ems_order
-
-ts_rabbit:
-  amqp: amqp://mggttmaj:oHk5HQ0ieaGlWIt1ysYTJyWtoOqasmtG@wasp.rmq.cloudamqp.com/mggttmaj
-  exchange_name: ts.order
-  exchange_type: topic
-  queue_name: ts.order
+  db: telegram-bot
 
 #Service config
 ts_service:

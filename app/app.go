@@ -6,8 +6,6 @@ import (
 
 	"telegram-bot/app/api"
 	"telegram-bot/app/dbs"
-	"telegram-bot/app/external"
-	"telegram-bot/app/queue"
 	"telegram-bot/app/repositories"
 	"telegram-bot/app/services"
 )
@@ -31,18 +29,6 @@ func BuildContainer() *dig.Container {
 	err = services.Inject(container)
 	if err != nil {
 		logger.Error("Failed to inject services", err)
-	}
-
-	// Inject externals
-	err = external.Inject(container)
-	if err != nil {
-		logger.Error("Failed to inject services", err)
-	}
-
-	// Inject queue
-	err = queue.Inject(container)
-	if err != nil {
-		logger.Error("Failed to inject queue", err)
 	}
 
 	// Inject APIs

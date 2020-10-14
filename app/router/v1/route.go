@@ -9,16 +9,6 @@ import (
 	"transport/lib/utils/logger"
 )
 
-func getPath() string {
-	path := "/ems/v1"
-	destination := viper.GetString("ts_service.destination")
-	if destination != "" {
-		path += "/" + destination
-	}
-
-	return path
-}
-
 func Initialize(container *dig.Container) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 
@@ -45,11 +35,5 @@ func InitializeCron(container *dig.Container) *gin.Engine {
 	app := gin.Default()
 	app.Use(tconfig.CorsGinMiddleware())
 	app.Use(ctxutils.GinGenContextMiddleware())
-
-	err := RegisterCron(app, container)
-	if err != nil {
-		logger.Error("Failed to register cron gateway: ", err)
-	}
-
 	return app
 }
