@@ -60,7 +60,7 @@ func main() {
 
 	if mode == 0 || mode == 2 {
 		container.Invoke(func(
-			inService services.InService,
+			inService services.ActionService,
 		) {
 			go inService.Consume()
 		})

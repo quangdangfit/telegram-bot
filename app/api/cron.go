@@ -11,10 +11,10 @@ import (
 
 type Cron struct {
 	outService services.OutService
-	inService  services.InService
+	inService  services.ActionService
 }
 
-func NewCron(outService services.OutService, inService services.InService) *Cron {
+func NewCron(outService services.OutService, inService services.ActionService) *Cron {
 	return &Cron{
 		outService: outService,
 		inService:  inService,

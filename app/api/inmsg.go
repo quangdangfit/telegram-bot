@@ -13,10 +13,10 @@ import (
 )
 
 type InMsg struct {
-	service services.InService
+	service services.ActionService
 }
 
-func NewInMsg(service services.InService) *InMsg {
+func NewInMsg(service services.ActionService) *InMsg {
 	return &InMsg{service: service}
 }
 

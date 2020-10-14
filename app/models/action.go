@@ -1,5 +1,9 @@
 package models
 
+const (
+	CollectionAction = "actions"
+)
+
 type Action struct {
 	Model  `json:",inline" bson:",inline"`
 	Name   int64 `json:"name,omitempty" bson:"name,omitempty"`

@@ -5,8 +5,6 @@ import (
 )
 
 func Inject(container *dig.Container) error {
-	_ = container.Provide(NewInMessageRepository)
-	_ = container.Provide(NewOutRepository)
-	_ = container.Provide(NewRoutingRepository)
+	_ = container.Provide(NewActionRepository)
 	return nil
 }
