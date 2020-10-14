@@ -15,7 +15,7 @@ func RegisterAPI(r *gin.Engine, container *dig.Container) error {
 	path := getPath()
 	err := container.Invoke(func(
 		outMsg *api.OutMsg,
-		inMsg *api.InMsg,
+		inMsg *api.Action,
 		routing *api.Routing,
 	) error {
 		route := r.Group(path)
