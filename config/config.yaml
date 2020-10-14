@@ -30,6 +30,9 @@ ts_service:
   logger_url: https://staging-truck-gw.ghn.dev/ems/v1/tlogger/internal/messages
   logger_routingkey: ts.tlogger
 
+telegram:
+  token: 994733944:AAFXPGBRbh-0tVZgyw5NeEqWrvLwOwnYius
+
 
 #Authen config
 ts_encryption:

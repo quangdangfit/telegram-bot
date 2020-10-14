@@ -7,12 +7,13 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-openapi/spec v0.19.9 // indirect
 	github.com/go-openapi/swag v0.19.9 // indirect
+	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
 	github.com/google/uuid v1.1.1
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/mailru/easyjson v0.7.3 // indirect
-	github.com/manucorporat/try v0.0.0-20170609134256-2a0c6b941d52
+	github.com/manucorporat/try v0.0.0-20170609134256-2a0c6b941d52 // indirect
 	github.com/spf13/viper v1.7.0
-	github.com/streadway/amqp v1.0.0
+	github.com/streadway/amqp v1.0.0 // indirect
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.7

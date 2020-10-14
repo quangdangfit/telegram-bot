@@ -8,6 +8,7 @@ import (
 	"telegram-bot/app/dbs"
 	"telegram-bot/app/repositories"
 	"telegram-bot/app/services"
+	"telegram-bot/pkg/telebot"
 )
 
 func BuildContainer() *dig.Container {
@@ -35,6 +36,12 @@ func BuildContainer() *dig.Container {
 	err = api.Inject(container)
 	if err != nil {
 		logger.Error("Failed to inject APIs", err)
+	}
+
+	// Inject Telegram bot
+	err = telebot.Inject(container)
+	if err != nil {
+		logger.Error("Failed to inject telegram bot", err)
 	}
 
 	return container

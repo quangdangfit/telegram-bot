@@ -6,6 +6,7 @@ import (
 	"telegram-bot/app/models"
 	"telegram-bot/app/repositories"
 	"telegram-bot/app/schema"
+	"telegram-bot/pkg/telebot"
 )
 
 type MessageService interface {
@@ -14,11 +15,13 @@ type MessageService interface {
 
 type messageService struct {
 	messageRepo repositories.IMessageRepository
+	tele        telebot.TelegramBot
 }
 
-func NewMessageService(messageRepo repositories.IMessageRepository) MessageService {
+func NewMessageService(messageRepo repositories.IMessageRepository, tele telebot.TelegramBot) MessageService {
 	service := messageService{
 		messageRepo: messageRepo,
+		tele:        tele,
 	}
 	return &service
 }
@@ -29,5 +32,6 @@ func (m *messageService) Create(ctx context.Context, body *schema.MessageCreateP
 		return nil, err
 	}
 
+	m.tele.Send(ctx, nil)
 	return result, nil
 }
