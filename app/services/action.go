@@ -16,19 +16,19 @@ type ActionService interface {
 	Create(ctx context.Context, body *schema.ActionCreateParam) (*models.Action, error)
 }
 
-type inService struct {
+type actionService struct {
 	actionRepo repositories.IActionRepository
 }
 
 func NewActionService(actionRepo repositories.IActionRepository) ActionService {
-	service := inService{
+	service := actionService{
 		actionRepo: actionRepo,
 	}
 	return &service
 }
 
-func (i *inService) Retrieve(ctx context.Context, name string) (*models.Action, error) {
-	result, err := i.actionRepo.Retrieve(name)
+func (a *actionService) Retrieve(ctx context.Context, name string) (*models.Action, error) {
+	result, err := a.actionRepo.Retrieve(name)
 	if err != nil {
 		return nil, err
 	}
@@ -36,8 +36,8 @@ func (i *inService) Retrieve(ctx context.Context, name string) (*models.Action, 
 	return result, nil
 }
 
-func (i *inService) List(ctx context.Context, name string) (*[]models.Action, *paging.Paging, error) {
-	result, pageInfo, err := i.actionRepo.List(name)
+func (a *actionService) List(ctx context.Context, name string) (*[]models.Action, *paging.Paging, error) {
+	result, pageInfo, err := a.actionRepo.List(name)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -45,8 +45,8 @@ func (i *inService) List(ctx context.Context, name string) (*[]models.Action, *p
 	return result, pageInfo, nil
 }
 
-func (i *inService) Create(ctx context.Context, body *schema.ActionCreateParam) (*models.Action, error) {
-	result, err := i.actionRepo.Create(body)
+func (a *actionService) Create(ctx context.Context, body *schema.ActionCreateParam) (*models.Action, error) {
+	result, err := a.actionRepo.Create(body)
 	if err != nil {
 		return nil, err
 	}
