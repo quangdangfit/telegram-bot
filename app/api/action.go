@@ -60,3 +60,37 @@ func (i *Action) List(c *gin.Context) thttp.Response {
 		Data:  rs,
 	}
 }
+
+// Create Action godoc
+// @Tags Actions
+// @Summary api create action
+// @Description api create action
+// @Accept  json
+// @Produce json
+// @Param Body body schema.ActionCreateParam true "Body"
+// @Security BasicAuth
+// @Success 200 {object} thttp.BaseResponse
+// @Router /private/actions [post]
+func (i *Action) Create(c *gin.Context) thttp.Response {
+	var body schema.ActionCreateParam
+	if err := c.Bind(&body); err != nil {
+		logger.Error("Failed to bind body: ", err)
+		return thttp.Response{
+			Error: errors.BadRequest.New(),
+		}
+	}
+
+	validate := validator.New()
+	if err := validate.Validate(body); err != nil {
+		logger.Error("Body is invalid ", err)
+		return thttp.Response{
+			Error: errors.BadRequest.New(),
+		}
+	}
+
+	result, err := i.service.Create(c, &body)
+	return thttp.Response{
+		Error: err,
+		Data:  result,
+	}
+}

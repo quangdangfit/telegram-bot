@@ -13,3 +13,8 @@ type Action struct {
 type ActionQueryParam struct {
 	Name string `json:"name,omitempty"`
 }
+
+type ActionCreateParam struct {
+	Name   string `json:"name,omitempty" validate:"required"`
+	ChatID int64  `json:"chat_id,omitempty" validate:"required"`
+}

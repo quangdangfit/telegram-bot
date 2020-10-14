@@ -31,6 +31,7 @@ func RegisterAPI(r *gin.Engine, container *dig.Container) error {
 		private.Use(jwtMiddleware)
 
 		private.GET("/actions", ginwrapper.Wrap(action.List))
+		private.POST("/actions", ginwrapper.Wrap(action.Create))
 
 		return nil
 	})

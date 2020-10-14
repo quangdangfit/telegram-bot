@@ -7,11 +7,13 @@ import (
 
 	"telegram-bot/app/models"
 	"telegram-bot/app/repositories"
+	"telegram-bot/app/schema"
 )
 
 type ActionService interface {
 	Retrieve(ctx context.Context, name string) (*models.Action, error)
 	List(ctx context.Context, name string) (*[]models.Action, *paging.Paging, error)
+	Create(ctx context.Context, body *schema.ActionCreateParam) (*models.Action, error)
 }
 
 type inService struct {
@@ -41,4 +43,13 @@ func (i *inService) List(ctx context.Context, name string) (*[]models.Action, *p
 	}
 
 	return result, pageInfo, nil
+}
+
+func (i *inService) Create(ctx context.Context, body *schema.ActionCreateParam) (*models.Action, error) {
+	result, err := i.actionRepo.Create(body)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
