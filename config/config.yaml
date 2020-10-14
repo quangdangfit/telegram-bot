@@ -30,15 +30,6 @@ ts_service:
   logger_url: https://staging-truck-gw.ghn.dev/ems/v1/tlogger/internal/messages
   logger_routingkey: ts.tlogger
 
-publisher:
-  ignore_store: false
-
-consumer:
-  threads: 10
-
-cron:
-  retry_size: 1000
-  archived_days: 7
 
 #Authen config
 ts_encryption:

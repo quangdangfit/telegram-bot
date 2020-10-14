@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 
-	"transport/lib/errors"
 	"transport/lib/utils/paging"
 
 	"telegram-bot/app/models"
@@ -11,8 +10,8 @@ import (
 )
 
 type ActionService interface {
-	//Retrieve(ctx context.Context, name string) (*models.Action, error)
-	//List(ctx context.Context, name string) (*[]models.Action, *paging.Paging, error)
+	Retrieve(ctx context.Context, name string) (*models.Action, error)
+	List(ctx context.Context, name string) (*[]models.Action, *paging.Paging, error)
 }
 
 type inService struct {
@@ -26,11 +25,20 @@ func NewActionService(actionRepo repositories.IActionRepository) ActionService {
 	return &service
 }
 
+func (i *inService) Retrieve(ctx context.Context, name string) (*models.Action, error) {
+	result, err := i.actionRepo.Retrieve(name)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 func (i *inService) List(ctx context.Context, name string) (*[]models.Action, *paging.Paging, error) {
 	result, pageInfo, err := i.actionRepo.List(name)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return result, pageInfo, errors.Success.New()
+	return result, pageInfo, nil
 }
