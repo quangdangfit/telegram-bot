@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
-WORKDIR /go/src/transport/ems
-COPY . /go/src/transport/ems
+WORKDIR /go/src/telegram-bot
+COPY . /go/src/telegram-bot
 RUN go build -mod=vendor -o ./dist/ems
 
 FROM alpine:3.11.3
@@ -10,6 +10,6 @@ RUN apk add --no-cache tzdata && \
   apk del tzdata
 
 COPY ./config/config.yaml .
-COPY --from=builder /go/src/transport/ems/dist/ems .
+COPY --from=builder /go/src/telegram-bot/dist/ems .
 EXPOSE 9090
 ENTRYPOINT ["./ems"]

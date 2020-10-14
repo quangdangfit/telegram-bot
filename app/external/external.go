@@ -12,9 +12,9 @@ import (
 	"transport/lib/thttp/httpclient/hook"
 	"transport/lib/utils/logger"
 
-	"transport/ems/app/models"
-	"transport/ems/app/schema"
-	"transport/ems/pkg/utils"
+	"telegram-bot/app/models"
+	"telegram-bot/app/schema"
+	"telegram-bot/pkg/utils"
 )
 
 type External interface {

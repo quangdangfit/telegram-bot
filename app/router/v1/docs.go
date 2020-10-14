@@ -5,7 +5,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"transport/ems/docs"
+	"telegram-bot/docs"
 )
 
 func RegisterDocs(e *gin.Engine) {

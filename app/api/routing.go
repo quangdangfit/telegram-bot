@@ -8,9 +8,9 @@ import (
 	"transport/lib/utils/logger"
 	"transport/lib/validator"
 
-	"transport/ems/app/schema"
-	"transport/ems/app/services"
-	"transport/ems/config"
+	"telegram-bot/app/schema"
+	"telegram-bot/app/services"
+	"telegram-bot/config"
 )
 
 type Routing struct {

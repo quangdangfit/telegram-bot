@@ -1,6 +1,6 @@
 package schema
 
-import "transport/ems/app/models"
+import "telegram-bot/app/models"
 
 type RoutingKey struct {
 	ID         string `json:"id,omitempty"`

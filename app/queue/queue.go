@@ -6,7 +6,7 @@ import (
 	"github.com/streadway/amqp"
 	"transport/lib/utils/logger"
 
-	"transport/ems/pkg/utils"
+	"telegram-bot/pkg/utils"
 )
 
 const (

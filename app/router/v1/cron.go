@@ -6,7 +6,7 @@ import (
 	"transport/lib/auth/basic"
 	"transport/lib/thttp/ginwrapper"
 
-	"transport/ems/app/api"
+	"telegram-bot/app/api"
 )
 
 func RegisterCron(r *gin.Engine, container *dig.Container) error {

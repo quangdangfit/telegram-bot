@@ -9,10 +9,10 @@ import (
 	"transport/lib/errors"
 	"transport/lib/utils/paging"
 
-	"transport/ems/app/models"
-	"transport/ems/app/repositories"
-	"transport/ems/app/schema"
-	"transport/ems/pkg/utils"
+	"telegram-bot/app/models"
+	"telegram-bot/app/repositories"
+	"telegram-bot/app/schema"
+	"telegram-bot/pkg/utils"
 )
 
 type RoutingService interface {

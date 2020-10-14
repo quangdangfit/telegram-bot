@@ -11,12 +11,12 @@ import (
 	"transport/lib/utils/logger"
 	"transport/lib/utils/paging"
 
-	"transport/ems/app/models"
-	"transport/ems/app/queue"
-	"transport/ems/app/repositories"
-	"transport/ems/app/schema"
-	"transport/ems/config"
-	"transport/ems/pkg/utils"
+	"telegram-bot/app/models"
+	"telegram-bot/app/queue"
+	"telegram-bot/app/repositories"
+	"telegram-bot/app/schema"
+	"telegram-bot/config"
+	"telegram-bot/pkg/utils"
 )
 
 type OutService interface {

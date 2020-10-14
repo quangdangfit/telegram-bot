@@ -6,7 +6,7 @@ import (
 	"transport/lib/thttp"
 	"transport/lib/utils/logger"
 
-	"transport/ems/app/services"
+	"telegram-bot/app/services"
 )
 
 type Cron struct {

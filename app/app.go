@@ -4,12 +4,12 @@ import (
 	"go.uber.org/dig"
 	"transport/lib/utils/logger"
 
-	"transport/ems/app/api"
-	"transport/ems/app/dbs"
-	"transport/ems/app/external"
-	"transport/ems/app/queue"
-	"transport/ems/app/repositories"
-	"transport/ems/app/services"
+	"telegram-bot/app/api"
+	"telegram-bot/app/dbs"
+	"telegram-bot/app/external"
+	"telegram-bot/app/queue"
+	"telegram-bot/app/repositories"
+	"telegram-bot/app/services"
 )
 
 func BuildContainer() *dig.Container {

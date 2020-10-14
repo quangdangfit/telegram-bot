@@ -8,8 +8,8 @@ import (
 	"github.com/streadway/amqp"
 	"transport/lib/utils/logger"
 
-	"transport/ems/app/models"
-	"transport/ems/pkg/utils"
+	"telegram-bot/app/models"
+	"telegram-bot/pkg/utils"
 )
 
 type Publisher interface {

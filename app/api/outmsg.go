@@ -8,8 +8,8 @@ import (
 	"transport/lib/utils/logger"
 	"transport/lib/validator"
 
-	"transport/ems/app/schema"
-	"transport/ems/app/services"
+	"telegram-bot/app/schema"
+	"telegram-bot/app/services"
 )
 
 type OutMsg struct {

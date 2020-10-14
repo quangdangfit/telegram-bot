@@ -13,9 +13,9 @@ import (
 
 	"github.com/spf13/viper"
 
-	"transport/ems/app"
-	v1 "transport/ems/app/router/v1"
-	"transport/ems/app/services"
+	"telegram-bot/app"
+	v1 "telegram-bot/app/router/v1"
+	"telegram-bot/app/services"
 )
 
 // @title Event Management System
