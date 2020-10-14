@@ -1,0 +1,662 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Event Management System API Swagger documents",
+        "title": "Event Management System",
+        "contact": {},
+        "license": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/internal/messages": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "api publish out message to amqp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Internal"
+                ],
+                "summary": "publish message to amqp",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.OutMessageBodyParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/private/in_messages": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "api get list in messages",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "In Messages"
+                ],
+                "summary": "api get list in messages",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "origin_code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "origin_model",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "routing_key.group",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "routing_key.name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "routing_key.value",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/private/in_messages/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "api update in message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "In Messages"
+                ],
+                "summary": "api update in message",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Message ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.InMessageBodyUpdateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/private/out_messages": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "api get list out messages",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Out Messages"
+                ],
+                "summary": "api get list out messages",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "origin_code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "origin_model",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "routing_key",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/private/out_messages/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "api update out message by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Out Messages"
+                ],
+                "summary": "api update out message by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Message ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "api update out message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Out Messages"
+                ],
+                "summary": "api update out message",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Message ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.OutMessageBodyUpdateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/private/routing_keys": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "api get list routing keys",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Routing Keys"
+                ],
+                "summary": "api get list routing keys",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "group",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "value",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "api create routing key",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Routing Keys"
+                ],
+                "summary": "api create routing key",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.RoutingKeyBodyCreateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/private/routing_keys/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "api update routing key",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Routing Keys"
+                ],
+                "summary": "api update routing key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Routing Key ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.RoutingKeyBodyUpdateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "api delete routing key",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Routing Keys"
+                ],
+                "summary": "api delete routing key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Routing Key ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/thttp.BaseResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "schema.InMessageBodyUpdateParam": {
+            "type": "object",
+            "properties": {
+                "attempts": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.InMessageQueryParam": {
+            "type": "object",
+            "properties": {
+                "origin_code": {
+                    "type": "string"
+                },
+                "origin_model": {
+                    "type": "string"
+                },
+                "routing_key.group": {
+                    "type": "string"
+                },
+                "routing_key.name": {
+                    "type": "string"
+                },
+                "routing_key.value": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.OutMessageBodyParam": {
+            "type": "object",
+            "required": [
+                "payload",
+                "routing_key"
+            ],
+            "properties": {
+                "external_id": {
+                    "type": "string"
+                },
+                "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "origin_code": {
+                    "type": "string"
+                },
+                "origin_model": {
+                    "type": "string"
+                },
+                "payload": {
+                    "type": "object"
+                },
+                "query": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "routing_key": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.OutMessageBodyUpdateParam": {
+            "type": "object",
+            "properties": {
+                "attempts": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.OutMessageQueryParam": {
+            "type": "object",
+            "properties": {
+                "origin_code": {
+                    "type": "string"
+                },
+                "origin_model": {
+                    "type": "string"
+                },
+                "routing_key": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.RoutingKeyBodyCreateParam": {
+            "type": "object",
+            "required": [
+                "api_method",
+                "api_url",
+                "auth_key",
+                "auth_type",
+                "group",
+                "name",
+                "value"
+            ],
+            "properties": {
+                "api_method": {
+                    "type": "string"
+                },
+                "api_url": {
+                    "type": "string"
+                },
+                "auth_key": {
+                    "type": "string"
+                },
+                "auth_type": {
+                    "type": "integer"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "retry_times": {
+                    "type": "integer"
+                },
+                "value": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.RoutingKeyBodyUpdateParam": {
+            "type": "object",
+            "properties": {
+                "api_method": {
+                    "type": "string"
+                },
+                "api_url": {
+                    "type": "string"
+                },
+                "auth_key": {
+                    "type": "string"
+                },
+                "auth_type": {
+                    "type": "integer"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "retry_times": {
+                    "type": "integer"
+                },
+                "value": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.RoutingKeyQueryParam": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "integer"
+                }
+            }
+        },
+        "thttp.BaseResponse": {
+            "type": "object",
+            "properties": {
+                "err_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "trace_id": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        },
+        "BasicAuth": {
+            "type": "basic"
+        }
+    }
+}

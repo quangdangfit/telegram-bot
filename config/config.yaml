@@ -1,0 +1,73 @@
+production: false
+
+profiler:
+  address: telegraf.monitoring.svc:8125
+  service: ems
+
+graceful:
+  port: 9090
+  waittime: 10s
+
+#DB config
+ts_mongodb:
+  host: 10.42.4.193:27017
+  user: truckair_access
+  pass: truckair@123
+  authdb: admin
+  replica: ""
+  db: ems_order
+
+ts_rabbit:
+  amqp: amqp://mggttmaj:oHk5HQ0ieaGlWIt1ysYTJyWtoOqasmtG@wasp.rmq.cloudamqp.com/mggttmaj
+  exchange_name: ts.order
+  exchange_type: topic
+  queue_name: ts.order
+
+#Service config
+ts_service:
+  mode: 0
+  destination: order
+  env: staging
+  user: ems
+  pass: emsinternal
+  error_url: https://staging-truck-gw.ghn.dev
+  hub_url: https://staging-truck-gw.ghn.dev
+  authen_url: https://staging-truck-gw.ghn.dev/ums/v1/internal
+  logger_url: https://staging-truck-gw.ghn.dev/ems/v1/tlogger/internal/messages
+  logger_routingkey: ts.tlogger
+
+publisher:
+  ignore_store: false
+
+consumer:
+  threads: 10
+
+cron:
+  retry_size: 1000
+  archived_days: 7
+
+#Authen config
+ts_encryption:
+  jwt_secret: secret
+  basic:
+    #Internal
+    - username: ums
+      password: umsinternal
+    - username: cdms
+      password: cdmsinternal
+    - username: tars
+      password: tarsinternal
+    - username: tms
+      password: tmsinternal
+    - username: srms
+      password: srmsinternal
+    - username: ems
+      password: emsinternal
+    - username: tsms
+      password: tsmsinternal
+    - username: ptms
+      password: ptmsinternal
+    - username: tlogger
+      password: tloggerinternal
+
+

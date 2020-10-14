@@ -1,0 +1,56 @@
+errortable:
+  baseurl: https://staging-truck-gw.ghn.dev
+
+graceful:
+  port: 9090
+  waittime: 10s
+
+ts_service:
+  mode: 0
+  destination: express
+  env: staging
+  user: ems
+  pass: emsinternal
+  error_url: https://staging-truck-gw.ghn.dev
+  hub_url: https://staging-truck-gw.ghn.dev
+  authen_url: https://staging-truck-gw.ghn.dev/ums/v1/internal
+  logger_url: https://staging-truck-gw.ghn.dev/ems/v1/tlogger/internal/messages
+  logger_routingkey: ts.tlogger
+
+ts_mongodb:
+  host: 10.42.4.193:27017
+  authdb: admin
+  db: ems_express
+  env: native
+  user: truckair_access
+  pass: truckair@123
+
+ts_rabbit:
+  amqp: amqp://mggttmaj:oHk5HQ0ieaGlWIt1ysYTJyWtoOqasmtG@wasp.rmq.cloudamqp.com/mggttmaj
+  exchange_name: ts.express
+  exchange_type: topic
+  queue_name: ts.express
+
+ts_encryption:
+  jwt_secret: secret
+  basic:
+    - username: ums
+      password: umsinternal
+    - username: cdms
+      password: cdmsinternal
+    - username: tars
+      password: tarsinternal
+    - username: tms
+      password: tmsinternal
+    - username: srms
+      password: srmsinternal
+    - username: ems
+      password: emsinternal
+
+
+publisher:
+  ignore_store: false
+
+consumer:
+  threads: 10
+  retry_times: 3

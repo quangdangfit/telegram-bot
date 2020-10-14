@@ -1,0 +1,419 @@
+definitions:
+  schema.InMessageBodyUpdateParam:
+    properties:
+      attempts:
+        type: integer
+      status:
+        type: string
+    type: object
+  schema.InMessageQueryParam:
+    properties:
+      origin_code:
+        type: string
+      origin_model:
+        type: string
+      routing_key.group:
+        type: string
+      routing_key.name:
+        type: string
+      routing_key.value:
+        type: integer
+      status:
+        type: string
+    type: object
+  schema.OutMessageBodyParam:
+    properties:
+      external_id:
+        type: string
+      headers:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        type: object
+      origin_code:
+        type: string
+      origin_model:
+        type: string
+      payload:
+        type: object
+      query:
+        additionalProperties:
+          type: string
+        type: object
+      routing_key:
+        type: string
+    required:
+    - payload
+    - routing_key
+    type: object
+  schema.OutMessageBodyUpdateParam:
+    properties:
+      attempts:
+        type: integer
+      status:
+        type: string
+    type: object
+  schema.OutMessageQueryParam:
+    properties:
+      origin_code:
+        type: string
+      origin_model:
+        type: string
+      routing_key:
+        type: string
+      status:
+        type: string
+    type: object
+  schema.RoutingKeyBodyCreateParam:
+    properties:
+      api_method:
+        type: string
+      api_url:
+        type: string
+      auth_key:
+        type: string
+      auth_type:
+        type: integer
+      group:
+        type: string
+      name:
+        type: string
+      retry_times:
+        type: integer
+      value:
+        type: integer
+    required:
+    - api_method
+    - api_url
+    - auth_key
+    - auth_type
+    - group
+    - name
+    - value
+    type: object
+  schema.RoutingKeyBodyUpdateParam:
+    properties:
+      api_method:
+        type: string
+      api_url:
+        type: string
+      auth_key:
+        type: string
+      auth_type:
+        type: integer
+      group:
+        type: string
+      name:
+        type: string
+      retry_times:
+        type: integer
+      value:
+        type: integer
+    type: object
+  schema.RoutingKeyQueryParam:
+    properties:
+      group:
+        type: string
+      name:
+        type: string
+      value:
+        type: integer
+    type: object
+  thttp.BaseResponse:
+    properties:
+      err_code:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+      trace_id:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Event Management System API Swagger documents
+  license: {}
+  title: Event Management System
+  version: "1.0"
+paths:
+  /internal/messages:
+    post:
+      consumes:
+      - application/json
+      description: api publish out message to amqp
+      parameters:
+      - description: Body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.OutMessageBodyParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - BasicAuth: []
+      summary: publish message to amqp
+      tags:
+      - Internal
+  /private/in_messages:
+    get:
+      consumes:
+      - application/json
+      description: api get list in messages
+      parameters:
+      - in: query
+        name: origin_code
+        type: string
+      - in: query
+        name: origin_model
+        type: string
+      - in: query
+        name: routing_key.group
+        type: string
+      - in: query
+        name: routing_key.name
+        type: string
+      - in: query
+        name: routing_key.value
+        type: integer
+      - in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: api get list in messages
+      tags:
+      - In Messages
+  /private/in_messages/{id}:
+    put:
+      consumes:
+      - application/json
+      description: api update in message
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.InMessageBodyUpdateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: api update in message
+      tags:
+      - In Messages
+  /private/out_messages:
+    get:
+      consumes:
+      - application/json
+      description: api get list out messages
+      parameters:
+      - in: query
+        name: origin_code
+        type: string
+      - in: query
+        name: origin_model
+        type: string
+      - in: query
+        name: routing_key
+        type: string
+      - in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: api get list out messages
+      tags:
+      - Out Messages
+  /private/out_messages/{id}:
+    get:
+      consumes:
+      - application/json
+      description: api update out message by id
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: api update out message by id
+      tags:
+      - Out Messages
+    put:
+      consumes:
+      - application/json
+      description: api update out message
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.OutMessageBodyUpdateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: api update out message
+      tags:
+      - Out Messages
+  /private/routing_keys:
+    get:
+      consumes:
+      - application/json
+      description: api get list routing keys
+      parameters:
+      - in: query
+        name: group
+        type: string
+      - in: query
+        name: name
+        type: string
+      - in: query
+        name: value
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: api get list routing keys
+      tags:
+      - Routing Keys
+    post:
+      consumes:
+      - application/json
+      description: api create routing key
+      parameters:
+      - description: Body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.RoutingKeyBodyCreateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: api create routing key
+      tags:
+      - Routing Keys
+  /private/routing_keys/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: api delete routing key
+      parameters:
+      - description: Routing Key ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: api delete routing key
+      tags:
+      - Routing Keys
+    put:
+      consumes:
+      - application/json
+      description: api update routing key
+      parameters:
+      - description: Routing Key ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.RoutingKeyBodyUpdateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/thttp.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: api update routing key
+      tags:
+      - Routing Keys
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+  BasicAuth:
+    type: basic
+swagger: "2.0"
