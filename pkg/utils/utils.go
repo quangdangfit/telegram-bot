@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"time"
@@ -39,4 +40,9 @@ func MonthPartitionName(s string, t time.Time) string {
 	}
 
 	return fmt.Sprintf("%s_%s_%d", s, m, t.Year())
+}
+
+func Jsonify(m interface{}) string {
+	b, _ := json.MarshalIndent(m, "", "    ")
+	return string(b)
 }

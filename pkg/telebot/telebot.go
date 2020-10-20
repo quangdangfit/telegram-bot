@@ -2,7 +2,6 @@ package telebot
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
@@ -10,6 +9,7 @@ import (
 	"transport/lib/utils/logger"
 
 	"telegram-bot/app/models"
+	"telegram-bot/pkg/utils"
 )
 
 const (
@@ -64,11 +64,6 @@ var data = map[string]interface{}{
 	},
 }
 
-func createKeyValuePairs(m map[string]interface{}) string {
-	b, _ := json.MarshalIndent(m, "", "    ")
-	return string(b)
-}
-
 type TelegramBot interface {
 	Send(ctx context.Context, message *models.Message)
 	Listen(ctx context.Context)
@@ -119,7 +114,7 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 	switch callback.Data {
 	case "more":
 		updateMarkup := t.generateMarkup(ctx, nil, true)
-		data := createKeyValuePairs(data)
+		data := utils.Jsonify(data)
 		edit := tgbotapi.EditMessageTextConfig{
 			BaseEdit: tgbotapi.BaseEdit{
 				ChatID:      callback.Message.Chat.ID,
@@ -156,11 +151,13 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 	}
 }
 
-func (t *telebot) Send(ctx context.Context, message *models.Message) {
+func (t *telebot) Send(ctx context.Context, msg *models.Message) {
 	numericKeyboard := t.generateMarkup(ctx, nil, false)
-	msg := tgbotapi.NewMessage(670391246, "Phiên bàn giao mới được tạo.\n")
-	msg.ReplyMarkup = numericKeyboard
-	t.bot.Send(msg)
+	for _, chatID := range msg.Action.ChatID {
+		msg := tgbotapi.NewMessage(chatID, msg.GetContent())
+		msg.ReplyMarkup = numericKeyboard
+		t.bot.Send(msg)
+	}
 }
 
 func (t *telebot) Listen(ctx context.Context) {
