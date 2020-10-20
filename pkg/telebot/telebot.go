@@ -71,11 +71,11 @@ type TelegramBot interface {
 
 type telebot struct {
 	bot      *tgbotapi.BotAPI
-	userRepo repositories.IUserRepository
+	chatRepo repositories.IChatRepository
 	msgRepo  repositories.IMessageRepository
 }
 
-func NewTeleBot(userRepo repositories.IUserRepository, msgRepo repositories.IMessageRepository) TelegramBot {
+func NewTeleBot(chatRepo repositories.IChatRepository, msgRepo repositories.IMessageRepository) TelegramBot {
 	token := viper.GetString("telegram.token")
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
@@ -84,7 +84,7 @@ func NewTeleBot(userRepo repositories.IUserRepository, msgRepo repositories.IMes
 
 	tele := &telebot{
 		bot:      bot,
-		userRepo: userRepo,
+		chatRepo: chatRepo,
 		msgRepo:  msgRepo,
 	}
 
@@ -187,18 +187,18 @@ func (t *telebot) Start(ctx context.Context, update *tgbotapi.Update) {
 		return
 	}
 
-	u, _ := t.userRepo.Retrieve(chat.ID)
+	u, _ := t.chatRepo.Retrieve(chat.ID)
 	if u != nil {
-		logger.Info("User is already existed")
+		logger.Info("Chat is already existed")
 		return
 	}
 
-	user := models.User{
-		ChatID:   chat.ID,
+	c := models.Chat{
+		ID:       chat.ID,
 		Username: chat.UserName,
 	}
 
-	t.userRepo.Create(&user)
+	t.chatRepo.Create(&c)
 }
 
 func (t *telebot) Listen(ctx context.Context) {
