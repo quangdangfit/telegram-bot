@@ -208,6 +208,8 @@ func (t *telebot) Listen(ctx context.Context) {
 		case "close":
 			msg.Text = "Closed"
 			msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+		default:
+			msg.Text = "Xin lỗi, hệ thống không hiểu lệnh của bạn."
 		}
 
 		if msg.Text != "" {
