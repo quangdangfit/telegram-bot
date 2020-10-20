@@ -65,7 +65,7 @@ var data = map[string]interface{}{
 }
 
 func createKeyValuePairs(m map[string]interface{}) string {
-	b, _ := json.MarshalIndent(m, "", "  ")
+	b, _ := json.MarshalIndent(m, "", "    ")
 	return string(b)
 }
 
@@ -138,7 +138,7 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 				MessageID:   callback.Message.MessageID,
 				ReplyMarkup: &updateMarkup,
 			},
-			Text: fmt.Sprintf("Có lịch trình mới vừa được tạo! Lịch trình %s vừa được tạo!", data["name"]),
+			Text: "Phiên bàn giao mới được tạo.",
 		}
 		t.bot.Send(edit)
 		break
@@ -149,17 +149,16 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 				MessageID:   callback.Message.MessageID,
 				ReplyMarkup: nil,
 			},
-			Text: fmt.Sprintf("Lịch trình %s đã bị từ chối bởi %s.", data["name"], callback.From.String()),
+			Text: fmt.Sprintf("Phiên bàn giao %s đã bị từ chối bởi %s.", data["name"], callback.From.String()),
 		}
 		t.bot.Send(edit)
-		logger.Info(callback)
 		break
 	}
 }
 
 func (t *telebot) Send(ctx context.Context, message *models.Message) {
 	numericKeyboard := t.generateMarkup(ctx, nil, false)
-	msg := tgbotapi.NewMessage(670391246, "Có lịch trình mới vừa được tạo!\n")
+	msg := tgbotapi.NewMessage(670391246, "Phiên bàn giao mới được tạo.\n")
 	msg.ReplyMarkup = numericKeyboard
 	t.bot.Send(msg)
 }
