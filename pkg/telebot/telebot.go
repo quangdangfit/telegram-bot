@@ -9,6 +9,7 @@ import (
 	"transport/lib/utils/logger"
 
 	"telegram-bot/app/models"
+	"telegram-bot/app/repositories"
 	"telegram-bot/pkg/utils"
 )
 
@@ -70,10 +71,11 @@ type TelegramBot interface {
 }
 
 type telebot struct {
-	bot *tgbotapi.BotAPI
+	bot      *tgbotapi.BotAPI
+	userRepo repositories.IUserRepository
 }
 
-func NewTeleBot() TelegramBot {
+func NewTeleBot(userRepo repositories.IUserRepository) TelegramBot {
 	token := viper.GetString("telegram.token")
 
 	bot, err := tgbotapi.NewBotAPI(token)
@@ -82,7 +84,8 @@ func NewTeleBot() TelegramBot {
 	}
 
 	tele := &telebot{
-		bot: bot,
+		bot:      bot,
+		userRepo: userRepo,
 	}
 
 	return tele
@@ -160,6 +163,26 @@ func (t *telebot) Send(ctx context.Context, msg *models.Message) {
 	}
 }
 
+func (t *telebot) Start(ctx context.Context, update *tgbotapi.Update) {
+	from := update.Message.From
+	if from == nil {
+		return
+	}
+
+	u, _ := t.userRepo.Retrieve(from.UserName)
+	if u != nil {
+		logger.Info("User is already existed")
+		return
+	}
+
+	user := models.User{
+		ChatID:   int64(from.ID),
+		Username: from.UserName,
+	}
+
+	t.userRepo.Create(&user)
+}
+
 func (t *telebot) Listen(ctx context.Context) {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -179,8 +202,9 @@ func (t *telebot) Listen(ctx context.Context) {
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 
 		switch update.Message.Text {
-		case "/start":
-			msg.Text = "Opened"
+		case "/start", "start":
+			t.Start(ctx, &update)
+			msg.Text = "Xin chào, tôi là bot của hệ thống GHN Transportation. Chúc bạn một ngày tốt lành."
 		case "close":
 			msg.Text = "Closed"
 			msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
