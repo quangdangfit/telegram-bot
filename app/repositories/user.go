@@ -12,7 +12,7 @@ import (
 )
 
 type IUserRepository interface {
-	Retrieve(username string) (*models.User, error)
+	Retrieve(chatID int64) (*models.User, error)
 	Create(user *models.User) error
 }
 
@@ -25,9 +25,9 @@ func NewUserRepository(db database.MongoDB) IUserRepository {
 	return &userRepo{db: db}
 }
 
-func (u *userRepo) Retrieve(username string) (*models.User, error) {
+func (u *userRepo) Retrieve(chatID int64) (*models.User, error) {
 	user := models.User{}
-	query := bson.M{"username": username}
+	query := bson.M{"chat_id": chatID}
 	err := u.db.FindOne(models.CollectionUser, query, DefaultSortField, &user)
 	if err != nil {
 		return nil, utils.BOTGetDataNotfound.New()

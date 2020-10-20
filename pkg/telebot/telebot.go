@@ -2,6 +2,7 @@ package telebot
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
@@ -10,14 +11,12 @@ import (
 
 	"telegram-bot/app/models"
 	"telegram-bot/app/repositories"
-	"telegram-bot/pkg/utils"
 )
 
 const (
-	ShowMoreButton = "↓ Show more"
-	ShowLessButton = "↑ Less"
-	ConfirmButton  = "✓ Confirm"
-	RejectButton   = "✗ Reject"
+	ConfirmButton = "✓ Confirm"
+	RejectButton  = "✗ Reject"
+	CancelButton  = "㊀ Cancel"
 )
 
 var data = map[string]interface{}{
@@ -73,11 +72,11 @@ type TelegramBot interface {
 type telebot struct {
 	bot      *tgbotapi.BotAPI
 	userRepo repositories.IUserRepository
+	msgRepo  repositories.IMessageRepository
 }
 
-func NewTeleBot(userRepo repositories.IUserRepository) TelegramBot {
+func NewTeleBot(userRepo repositories.IUserRepository, msgRepo repositories.IMessageRepository) TelegramBot {
 	token := viper.GetString("telegram.token")
-
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		logger.Panic(err)
@@ -86,26 +85,30 @@ func NewTeleBot(userRepo repositories.IUserRepository) TelegramBot {
 	tele := &telebot{
 		bot:      bot,
 		userRepo: userRepo,
+		msgRepo:  msgRepo,
 	}
 
 	return tele
 }
 
-func (t *telebot) generateMarkup(ctx context.Context, data interface{}, less bool) tgbotapi.InlineKeyboardMarkup {
-	showType := tgbotapi.NewInlineKeyboardButtonData(ShowMoreButton, "more")
-	if less {
-		showType = tgbotapi.NewInlineKeyboardButtonData(ShowLessButton, "less")
+func (t *telebot) generateMarkupData(action string, id string) string {
+	data := map[string]interface{}{
+		"id":     id,
+		"action": action,
 	}
+	b, _ := json.Marshal(data)
+	return string(b)
+}
 
-	return tgbotapi.NewInlineKeyboardMarkup(
+func (t *telebot) generateMarkup(ctx context.Context, id string) *tgbotapi.InlineKeyboardMarkup {
+	markup := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			showType,
-		),
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(ConfirmButton, "confirm"),
-			tgbotapi.NewInlineKeyboardButtonData(RejectButton, "reject"),
+			tgbotapi.NewInlineKeyboardButtonData(ConfirmButton, t.generateMarkupData("confirm", id)),
+			tgbotapi.NewInlineKeyboardButtonData(RejectButton, t.generateMarkupData("reject", id)),
+			tgbotapi.NewInlineKeyboardButtonData(CancelButton, t.generateMarkupData("cancel", id)),
 		),
 	)
+	return &markup
 }
 
 func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
@@ -114,29 +117,29 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 	}
 
 	callback := update.CallbackQuery
-	switch callback.Data {
-	case "more":
-		updateMarkup := t.generateMarkup(ctx, nil, true)
-		data := utils.Jsonify(data)
+	strData := callback.Data
+	var mapData map[string]string
+	json.Unmarshal([]byte(strData), &mapData)
+
+	if mapData["action"] == "" || mapData["id"] == "" {
+		return
+	}
+
+	msg, err := t.msgRepo.Retrieve(mapData["id"])
+	if err != nil {
+		return
+	}
+	logger.Info(*msg)
+
+	switch mapData["action"] {
+	case "confirm":
 		edit := tgbotapi.EditMessageTextConfig{
 			BaseEdit: tgbotapi.BaseEdit{
 				ChatID:      callback.Message.Chat.ID,
 				MessageID:   callback.Message.MessageID,
-				ReplyMarkup: &updateMarkup,
+				ReplyMarkup: nil,
 			},
-			Text: callback.Message.Text + "\n" + data,
-		}
-		t.bot.Send(edit)
-		break
-	case "less":
-		updateMarkup := t.generateMarkup(ctx, nil, false)
-		edit := tgbotapi.EditMessageTextConfig{
-			BaseEdit: tgbotapi.BaseEdit{
-				ChatID:      callback.Message.Chat.ID,
-				MessageID:   callback.Message.MessageID,
-				ReplyMarkup: &updateMarkup,
-			},
-			Text: "Phiên bàn giao mới được tạo.",
+			Text: fmt.Sprintf("Phiên bàn giao %s đã được xác nhận bởi @%s.", data["name"], callback.From.String()),
 		}
 		t.bot.Send(edit)
 		break
@@ -147,7 +150,18 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 				MessageID:   callback.Message.MessageID,
 				ReplyMarkup: nil,
 			},
-			Text: fmt.Sprintf("Phiên bàn giao %s đã bị từ chối bởi %s.", data["name"], callback.From.String()),
+			Text: fmt.Sprintf("Phiên bàn giao %s đã bị từ chối bởi @%s.", data["name"], callback.From.String()),
+		}
+		t.bot.Send(edit)
+		break
+	case "cancel":
+		edit := tgbotapi.EditMessageTextConfig{
+			BaseEdit: tgbotapi.BaseEdit{
+				ChatID:      callback.Message.Chat.ID,
+				MessageID:   callback.Message.MessageID,
+				ReplyMarkup: nil,
+			},
+			Text: fmt.Sprintf("Phiên bàn giao %s đã bị hủy bởi @%s.", data["name"], callback.From.String()),
 		}
 		t.bot.Send(edit)
 		break
@@ -155,29 +169,33 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 }
 
 func (t *telebot) Send(ctx context.Context, msg *models.Message) {
-	numericKeyboard := t.generateMarkup(ctx, nil, false)
+	numericKeyboard := t.generateMarkup(ctx, msg.ID)
 	for _, chatID := range msg.Action.ChatID {
-		msg := tgbotapi.NewMessage(chatID, msg.GetContent())
+		msg := tgbotapi.NewMessage(chatID, msg.GetFullContent())
 		msg.ReplyMarkup = numericKeyboard
-		t.bot.Send(msg)
+		_, err := t.bot.Send(msg)
+
+		if err != nil {
+			logger.Error("Cannot send message ", err)
+		}
 	}
 }
 
 func (t *telebot) Start(ctx context.Context, update *tgbotapi.Update) {
-	from := update.Message.From
-	if from == nil {
+	chat := update.Message.Chat
+	if chat == nil {
 		return
 	}
 
-	u, _ := t.userRepo.Retrieve(from.UserName)
+	u, _ := t.userRepo.Retrieve(chat.ID)
 	if u != nil {
 		logger.Info("User is already existed")
 		return
 	}
 
 	user := models.User{
-		ChatID:   int64(from.ID),
-		Username: from.UserName,
+		ChatID:   chat.ID,
+		Username: chat.UserName,
 	}
 
 	t.userRepo.Create(&user)
@@ -204,10 +222,7 @@ func (t *telebot) Listen(ctx context.Context) {
 		switch update.Message.Text {
 		case "/start", "start":
 			t.Start(ctx, &update)
-			msg.Text = "Xin chào, tôi là bot của hệ thống GHN Transportation. Chúc bạn một ngày tốt lành."
-		case "close":
-			msg.Text = "Closed"
-			msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+			msg.Text = "Hệ thống đã ghi nhận tài khoản của bạn. Xin cám ơn."
 		default:
 			msg.Text = "Xin lỗi, hệ thống không hiểu lệnh của bạn."
 		}
