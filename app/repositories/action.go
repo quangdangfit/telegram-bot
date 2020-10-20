@@ -11,6 +11,7 @@ import (
 
 	"telegram-bot/app/models"
 	"telegram-bot/app/schema"
+	"telegram-bot/pkg/utils"
 )
 
 const (
@@ -40,7 +41,7 @@ func (a *actionRepo) Retrieve(name string) (*models.Action, error) {
 	query := bson.M{"name": name}
 	err := a.db.FindOne(models.CollectionAction, query, DefaultSortField, &action)
 	if err != nil {
-		return nil, err
+		return nil, utils.BOTGetDataNotfound.New()
 	}
 
 	return &action, nil
@@ -51,7 +52,7 @@ func (a *actionRepo) List(name string) (*[]models.Action, *paging.Paging, error)
 	query := bson.M{"name": name}
 	pageInfo, err := a.db.FindManyPaging(models.CollectionAction, query, DefaultSortField, 1, 25, &actions)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, utils.BOTGetDataError.New()
 	}
 
 	return &actions, pageInfo, nil
@@ -69,7 +70,7 @@ func (a *actionRepo) Create(body *schema.ActionCreateParam) (*models.Action, err
 
 	err := a.db.InsertOne(models.CollectionAction, &action)
 	if err != nil {
-		return nil, err
+		return nil, utils.BOTAddDataError.New()
 	}
 
 	return &action, nil

@@ -4,15 +4,13 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 	"transport/lib/database"
 
 	"telegram-bot/app/models"
-	"telegram-bot/app/schema"
 )
 
 type IMessageRepository interface {
-	Create(body *schema.MessageCreateParam) (*models.Message, error)
+	Create(msg *models.Message) error
 }
 
 type messageRepo struct {
@@ -27,20 +25,15 @@ func NewMessageRepository(db database.MongoDB) IMessageRepository {
 	return &messageRepo{db: db}
 }
 
-func (a *messageRepo) Create(body *schema.MessageCreateParam) (*models.Message, error) {
-	message := models.Message{
-		Model: models.Model{
-			ID:          uuid.New().String(),
-			CreatedTime: time.Now().UTC().Format(time.RFC3339Nano),
-			UpdatedTime: time.Now().UTC().Format(time.RFC3339Nano),
-		},
-	}
-	copier.Copy(&message, &body)
+func (a *messageRepo) Create(msg *models.Message) error {
+	msg.ID = uuid.New().String()
+	msg.CreatedTime = time.Now().Format(time.RFC3339Nano)
+	msg.UpdatedTime = time.Now().Format(time.RFC3339Nano)
 
-	err := a.db.InsertOne(models.CollectionMessage, &message)
+	err := a.db.InsertOne(models.CollectionMessage, &msg)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &message, nil
+	return nil
 }

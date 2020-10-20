@@ -7,6 +7,6 @@ const (
 type Message struct {
 	Model  `json:",inline" bson:",inline"`
 	Code   string      `json:"code,omitempty" bson:"code,omitempty"`
-	Action string      `json:"name,omitempty" bson:"name,omitempty"`
+	Action Action      `json:"action,omitempty" bson:"action,omitempty"`
 	Data   interface{} `json:"data,omitempty" bson:"data,omitempty"`
 }

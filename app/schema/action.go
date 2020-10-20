@@ -16,7 +16,9 @@ type ActionQueryParam struct {
 }
 
 type ActionCreateParam struct {
-	Name    string `json:"name,omitempty" validate:"required"`
-	ChatID  int64  `json:"chat_id,omitempty" validate:"required"`
-	Content string `json:"content,omitempty" validate:"required"`
+	Name       string  `json:"name,omitempty" validate:"required"`
+	ChatID     []int64 `json:"chat_id,omitempty" validate:"required"`
+	Content    string  `json:"content,omitempty" validate:"required"`
+	UrlConfirm string  `json:"url_confirm,omitempty"`
+	UrlReject  string  `json:"url_reject,omitempty"`
 }
