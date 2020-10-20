@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -12,6 +13,7 @@ import (
 
 	"telegram-bot/app"
 	v1 "telegram-bot/app/router/v1"
+	"telegram-bot/pkg/telebot"
 	"telegram-bot/pkg/utils"
 )
 
@@ -43,6 +45,13 @@ func main() {
 	s := graceful.Register(serv)
 	defer s.Close()
 	go s.StartServer(serv)
+
+	container.Invoke(func(
+		tele telebot.TelegramBot,
+	) {
+		logger.Info("Listening telegram update")
+		tele.Listen(context.TODO())
+	})
 
 	// Wait for interrupt signal to gracefully shutdown the server with
 	// a timeout of 10 seconds.
