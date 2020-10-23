@@ -19,51 +19,6 @@ const (
 	CancelButton  = "㊀ Cancel"
 )
 
-var data = map[string]interface{}{
-	"name":       " 12ASDASD ASD2",
-	"hub":        "HCM",
-	"tag":        "Liên tỉnh",
-	"cycle_type": "day",
-	"cycle_time": 300,
-	"start_time": "2020-08-09T09:45:51+07:00",
-	"end_time":   "2020-09-13T09:45:51+07:00",
-	"stoppoints": []map[string]interface{}{
-		{
-			"code":            "55",
-			"name":            "Kho giao nhận Yên Minh_Hà Giang",
-			"type":            "express",
-			"address":         "HCM",
-			"sort":            1,
-			"est_distance":    0,
-			"est_duration":    1322312,
-			"est_day":         0,
-			"est_time_in_at":  0,
-			"est_time_out_at": 120,
-		},
-		{
-			"code":            "55",
-			"name":            "Kho giao nhận Yên Minh_Hà Giang",
-			"type":            "express",
-			"address":         "HCM",
-			"sort":            2,
-			"est_distance":    0,
-			"est_duration":    1322312,
-			"est_day":         1,
-			"est_time_in_at":  0,
-			"est_time_out_at": 120,
-		}},
-	"drivers": map[string]interface{}{
-		"id":       5,
-		"fullname": "Nguyễn Phát Lợi",
-		"phone":    "983214701",
-	},
-	"vehicle": map[string]interface{}{
-		"id":        2,
-		"id_number": "51D-03913",
-		"payload":   2300,
-	},
-}
-
 type TelegramBot interface {
 	Send(ctx context.Context, message *models.Message)
 	Listen(ctx context.Context)
@@ -139,7 +94,7 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 				MessageID:   callback.Message.MessageID,
 				ReplyMarkup: nil,
 			},
-			Text: fmt.Sprintf("Phiên bàn giao %s đã được xác nhận bởi @%s.", data["name"], callback.From.String()),
+			Text: fmt.Sprintf("Phiên bàn giao %s đã được xác nhận bởi @%s.", msg.Code, callback.From.String()),
 		}
 		t.bot.Send(edit)
 		break
@@ -150,7 +105,7 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 				MessageID:   callback.Message.MessageID,
 				ReplyMarkup: nil,
 			},
-			Text: fmt.Sprintf("Phiên bàn giao %s đã bị từ chối bởi @%s.", data["name"], callback.From.String()),
+			Text: fmt.Sprintf("Phiên bàn giao %s đã bị từ chối bởi @%s.", msg.Code, callback.From.String()),
 		}
 		t.bot.Send(edit)
 		break
@@ -161,7 +116,7 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 				MessageID:   callback.Message.MessageID,
 				ReplyMarkup: nil,
 			},
-			Text: fmt.Sprintf("Phiên bàn giao %s đã bị hủy bởi @%s.", data["name"], callback.From.String()),
+			Text: fmt.Sprintf("Phiên bàn giao %s đã bị hủy bởi @%s.", msg.Code, callback.From.String()),
 		}
 		t.bot.Send(edit)
 		break
@@ -196,6 +151,8 @@ func (t *telebot) Start(ctx context.Context, update *tgbotapi.Update) {
 	c := models.Chat{
 		ID:       chat.ID,
 		Username: chat.UserName,
+		Title:    chat.Title,
+		Type:     chat.Type,
 	}
 
 	t.chatRepo.Create(&c)
