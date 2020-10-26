@@ -8,13 +8,8 @@ type ResponsePagingResult struct {
 }
 
 type ExternalResponse struct {
-	Status     interface{} `json:"status,omitempty" bson:"status,omitempty"`
-	StatusCode int         `json:"status_code,omitempty" bson:"status_code,omitempty"`
-	ErrorCode  string      `json:"err_code,omitempty" bson:"err_code,omitempty"`
-	Data       interface{} `json:"data,omitempty" bson:"data,omitempty"`
-	Message    string      `json:"message,omitempty" bson:"message,omitempty"`
-	TraceID    string      `json:"trace_id,omitempty" bson:"trace_id,omitempty"`
-	Body       interface{} `json:"body,omitempty" bson:"body,omitempty"`
-	Latency    int64       `json:"latency,omitempty" bson:"latency,omitempty"`
-	HandleTime string      `json:"handle_time,omitempty" bson:"handle_time,omitempty"`
+	Status    interface{} `json:"status,omitempty"`
+	ErrorCode string      `json:"err_code"`
+	Message   string      `json:"message"`
+	TraceID   string      `json:"trace_id"`
 }

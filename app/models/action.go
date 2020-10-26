@@ -11,5 +11,6 @@ type Action struct {
 	Content    string  `json:"content,omitempty" bson:"content,omitempty"`
 	UrlConfirm string  `json:"url_confirm,omitempty" bson:"url_confirm,omitempty"`
 	UrlReject  string  `json:"url_reject,omitempty" bson:"url_reject,omitempty"`
+	UrlCancel  string  `json:"url_cancel,omitempty" bson:"url_cancel,omitempty"`
 	Status     bool    `json:"status,omitempty" bson:"status,omitempty"`
 }

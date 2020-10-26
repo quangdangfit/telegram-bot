@@ -9,8 +9,10 @@ import (
 	"github.com/spf13/viper"
 	"transport/lib/utils/logger"
 
+	"telegram-bot/app/external"
 	"telegram-bot/app/models"
 	"telegram-bot/app/repositories"
+	"telegram-bot/pkg/utils"
 )
 
 const (
@@ -28,9 +30,10 @@ type telebot struct {
 	bot      *tgbotapi.BotAPI
 	chatRepo repositories.IChatRepository
 	msgRepo  repositories.IMessageRepository
+	external external.External
 }
 
-func NewTeleBot(chatRepo repositories.IChatRepository, msgRepo repositories.IMessageRepository) TelegramBot {
+func NewTeleBot(chatRepo repositories.IChatRepository, msgRepo repositories.IMessageRepository, external external.External) TelegramBot {
 	token := viper.GetString("telegram.token")
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
@@ -41,6 +44,7 @@ func NewTeleBot(chatRepo repositories.IChatRepository, msgRepo repositories.IMes
 		bot:      bot,
 		chatRepo: chatRepo,
 		msgRepo:  msgRepo,
+		external: external,
 	}
 
 	return tele
@@ -85,8 +89,16 @@ func (t *telebot) handleMarkup(ctx context.Context, update tgbotapi.Update) {
 		return
 	}
 	logger.Info(*msg)
+	action := mapData["action"]
 
-	switch mapData["action"] {
+	res, err := t.external.Call(ctx, msg, action)
+	if err != nil {
+		msg := tgbotapi.NewMessage(callback.Message.Chat.ID, fmt.Sprintf("Cannot %s session %s by @%s\n%s", action, msg.Code, callback.From.String(), utils.Jsonify(res)))
+		t.bot.Send(msg)
+		return
+	}
+
+	switch action {
 	case "confirm":
 		edit := tgbotapi.EditMessageTextConfig{
 			BaseEdit: tgbotapi.BaseEdit{
