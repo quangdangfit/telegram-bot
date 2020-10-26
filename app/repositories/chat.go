@@ -24,7 +24,7 @@ func NewChatRepository(db database.MongoDB) IChatRepository {
 
 func (u *chatRepo) Retrieve(id int64) (*models.Chat, error) {
 	chat := models.Chat{}
-	query := bson.M{"id": id}
+	query := bson.M{"chat_id": id}
 	err := u.db.FindOne(models.CollectionChat, query, DefaultSortField, &chat)
 	if err != nil {
 		return nil, utils.BOTGetDataNotfound.New()
